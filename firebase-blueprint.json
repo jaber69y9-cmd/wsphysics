@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "Degree": {
+      "title": "Degree",
+      "description": "Represents an academic degree or program level.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the degree." },
+        "description": { "type": "string", "description": "A brief description." }
+      },
+      "required": ["title"]
+    },
+    "OnlineCourse": {
+      "title": "Online Course",
+      "description": "Represents an online course offered by the institution.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the course." },
+        "description": { "type": "string", "description": "A detailed description of the course." },
+        "price": { "type": "number", "description": "The price of the course." },
+        "image_url": { "type": "string", "description": "The URL of the course image." },
+        "zoom_id": { "type": "string", "description": "The Zoom Meeting ID for live classes." },
+        "zoom_password": { "type": "string", "description": "The Zoom Meeting Password for live classes." }
+      },
+      "required": ["title", "price"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Represents a student enrolled in the institution.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the student." },
+        "email": { "type": "string", "description": "The email of the student." },
+        "roll_number": { "type": "string", "description": "The roll number of the student." },
+        "phone": { "type": "string", "description": "The phone number of the student." },
+        "photo_url": { "type": "string", "description": "The URL of the student's photo." },
+        "student_type": { "type": "string", "description": "The type of student (online/offline).", "enum": ["online", "offline"] },
+        "status": { "type": "string", "description": "The status of the student account.", "enum": ["pending", "approved", "passed", "upcoming"] }
+      },
+      "required": ["name", "email"]
+    },
+    "Notice": {
+      "title": "Notice",
+      "description": "Represents a notice or announcement.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the notice." },
+        "content": { "type": "string", "description": "The content of the notice." },
+        "date": { "type": "string", "description": "The date the notice was posted." },
+        "is_verified": { "type": "boolean", "description": "Whether the notice is verified by admin." }
+      },
+      "required": ["title", "content", "date"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Represents the global settings of the application.",
+      "type": "object",
+      "properties": {
+        "facebook_url": { "type": "string" },
+        "youtube_url": { "type": "string" },
+        "instagram_url": { "type": "string" },
+        "linkedin_url": { "type": "string" },
+        "hero_image": { "type": "string" },
+        "about_image": { "type": "string" },
+        "logo_url": { "type": "string" },
+        "contact_phone": { "type": "string" },
+        "contact_email": { "type": "string" },
+        "office_address": { "type": "string" },
+        "campus_2_address": { "type": "string" },
+        "about_text": { "type": "string" },
+        "payment_number": { "type": "string" }
+      }
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Represents a student review or testimonial.",
+      "type": "object",
+      "properties": {
+        "student_name": { "type": "string", "description": "The name of the student." },
+        "student_photo": { "type": "string", "description": "The URL of the student's photo." },
+        "content": { "type": "string", "description": "The review content." },
+        "rating": { "type": "number", "description": "The rating given by the student (1-5)." },
+        "batch": { "type": "string", "description": "The batch of the student." },
+        "date": { "type": "string", "description": "The date the review was posted." }
+      },
+      "required": ["student_name", "content", "rating"]
+    }
+  },
+  "firestore": {
+    "/degrees/{degreeId}": {
+      "schema": { "$ref": "Degree" },
+      "description": "Collection of available degrees."
+    },
+    "/online_courses/{courseId}": {
+      "schema": { "$ref": "OnlineCourse" },
+      "description": "Collection of online courses."
+    },
+    "/students/{studentId}": {
+      "schema": { "$ref": "Student" },
+      "description": "Collection of students."
+    },
+    "/notices/{noticeId}": {
+      "schema": { "$ref": "Notice" },
+      "description": "Collection of notices."
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "Settings" },
+      "description": "Collection of global settings."
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "Review" },
+      "description": "Collection of student reviews."
+    }
+  }
+}

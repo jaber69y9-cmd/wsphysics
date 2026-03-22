@@ -197,7 +197,7 @@ const Footer = () => {
           </p>
           <div className="h-px w-12 bg-white/30"></div>
           <p className="text-[10px] sm:text-xs text-orange-100 font-bold uppercase tracking-[0.2em] opacity-90">
-            Developed by Mohammad Jaber Bin Razzak
+            Developed by <a href="https://jaber2026.github.io/jaber/">Mohammad Jaber Bin Razzak</a>
           </p>
         </div>
       </div>

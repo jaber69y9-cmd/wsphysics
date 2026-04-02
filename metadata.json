@@ -1,0 +1,8 @@
+{
+  "name": "Jaber Math Care",
+  "description": "A full-stack educational platform for a Math teacher with admin dashboard, student management, attendance, and payment systems.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

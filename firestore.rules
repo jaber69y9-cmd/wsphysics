@@ -1,0 +1,107 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' || 
+         request.auth.token.email == 'wsphysics@gmail.com' ||
+         request.auth.token.email == 'abudardmd@gmail.com');
+    }
+    
+    function isModerator() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'moderator';
+    }
+    
+    function isStaff() {
+      return isAdmin() || isModerator();
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isStaff();
+      allow create: if request.resource.data.role == 'student' || isStaff(); // Only staff can create admins/moderators
+      allow update: if (isOwner(userId) && request.resource.data.role == resource.data.role) || isStaff();
+      allow delete: if isAdmin();
+    }
+
+    // Batches Collection
+    match /batches/{batchId} {
+      allow read: if true; // Publicly readable for registration
+      allow write: if isStaff();
+    }
+
+    // Notices Collection
+    match /notices/{noticeId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    // Study Materials Collection
+    match /study_materials/{materialId} {
+      allow read: if isAuthenticated();
+      allow write: if isStaff();
+    }
+
+    // Results Collection
+    match /results/{resultId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    // Attendance Collection
+    match /attendance/{attendanceId} {
+      allow read: if isAuthenticated() && (resource.data.student_id == request.auth.uid || isStaff());
+      allow write: if isStaff();
+    }
+
+    // Payments Collection
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (resource.data.student_id == request.auth.uid || isStaff());
+      allow write: if isStaff();
+    }
+
+    // Degrees Collection
+    match /degrees/{degreeId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    // Enrollments Collection
+    match /enrollments/{enrollmentId} {
+      allow read: if isStaff(); // Only staff can read enrollments
+      allow create: if true; // Anyone can submit an enrollment
+      allow update, delete: if isStaff();
+    }
+
+    // Messages Collection
+    match /messages/{messageId} {
+      allow create: if true; // Allow public to send messages
+      allow read, update, delete: if isStaff(); // Only staff can manage messages
+    }
+
+    // Reviews Collection
+    match /reviews/{reviewId} {
+      allow read: if true; // Publicly readable
+      allow create: if isAuthenticated(); // Authenticated students can create
+      allow update, delete: if isStaff(); // Only staff can update/delete
+    }
+
+    // General Collections (Gallery, Programs, Courses, etc.)
+    match /{document=**} {
+      allow read: if true; // Default allow read for public content
+      allow write: if isStaff(); // Only staff can write by default
+    }
+  }
+}
